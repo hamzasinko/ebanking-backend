@@ -8,6 +8,7 @@ import ma.enset.ebanking.entities.SavingAccount;
 import ma.enset.ebanking.exceptions.BalanceNotSufficientException;
 import ma.enset.ebanking.exceptions.BankAccountNotFoundException;
 import ma.enset.ebanking.exceptions.CustomerNotFoundException;
+import ma.enset.ebanking.exceptions.UnableToTransferException;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface BankAccountService {
     BankAccountDto getBankAccount(String accountId) throws BankAccountNotFoundException;
     void debit(String accountId, double amount, String description) throws BankAccountNotFoundException, BalanceNotSufficientException;
     void credit(String accountId, double amount, String description) throws BankAccountNotFoundException;
-    void transfer(String accountIdSource, String accountIdDestination, double amount) throws BankAccountNotFoundException, BalanceNotSufficientException;
+    void transfer(String accountIdSource, String accountIdDestination, double amount) throws BankAccountNotFoundException, BalanceNotSufficientException, UnableToTransferException;
 
     CustomerDto getCustomer(Long customerId) throws CustomerNotFoundException;
 

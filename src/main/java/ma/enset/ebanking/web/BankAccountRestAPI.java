@@ -1,9 +1,9 @@
 package ma.enset.ebanking.web;
 
-import ma.enset.ebanking.dtos.AccountHistoryDto;
-import ma.enset.ebanking.dtos.AccountOperationDto;
-import ma.enset.ebanking.dtos.BankAccountDto;
+import ma.enset.ebanking.dtos.*;
+import ma.enset.ebanking.exceptions.BalanceNotSufficientException;
 import ma.enset.ebanking.exceptions.BankAccountNotFoundException;
+import ma.enset.ebanking.exceptions.UnableToTransferException;
 import ma.enset.ebanking.services.BankAccountService;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,5 +36,21 @@ public class BankAccountRestAPI {
             @RequestParam(name = "page",defaultValue = "0") int page,
             @RequestParam(name = "size",defaultValue = "5") int size) throws BankAccountNotFoundException {
         return bankAccountService.getAccountHistory(accountId,page,size);
+    }
+    @PostMapping("/account/debit")
+    public DebitDto debit(@RequestBody DebitDto debitDto) throws BankAccountNotFoundException, BalanceNotSufficientException {
+        this.bankAccountService.debit(debitDto.getAccountId(),debitDto.getAmount(),debitDto.getDescription());
+        return debitDto;
+    }
+    @PostMapping("/account/credit")
+    public CreditDto credit(@RequestBody CreditDto creditDto) throws BankAccountNotFoundException {
+        this.bankAccountService.credit(creditDto.getAccountId(),creditDto.getAmount(),creditDto.getDescription());
+        return creditDto;
+    }
+    @PostMapping("/account/transfer")
+    public void transfer(@RequestBody TransferDto transferDto) throws BankAccountNotFoundException, BalanceNotSufficientException, UnableToTransferException {
+        this.bankAccountService.transfer(transferDto.getAccountSource(),
+                transferDto.getAccountDestination(),
+                transferDto.getAmount());
     }
 }

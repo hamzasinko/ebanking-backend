@@ -9,6 +9,7 @@ import ma.enset.ebanking.enums.OperationType;
 import ma.enset.ebanking.exceptions.BalanceNotSufficientException;
 import ma.enset.ebanking.exceptions.BankAccountNotFoundException;
 import ma.enset.ebanking.exceptions.CustomerNotFoundException;
+import ma.enset.ebanking.exceptions.UnableToTransferException;
 import ma.enset.ebanking.mapper.BankAccountMapperImpl;
 import ma.enset.ebanking.repositories.AccountOperationRepository;
 import ma.enset.ebanking.repositories.BankAccountRepository;
@@ -127,7 +128,9 @@ public class BankAccountServiceImpl implements BankAccountService{
     }
 
     @Override
-    public void transfer(String accountIdSource, String accountIdDestination, double amount) throws BankAccountNotFoundException, BalanceNotSufficientException {
+    public void transfer(String accountIdSource, String accountIdDestination, double amount) throws BankAccountNotFoundException, BalanceNotSufficientException, UnableToTransferException {
+        if(accountIdSource.equals(accountIdDestination))
+            throw new UnableToTransferException("An account can't transfer to itself");
         debit(accountIdSource,amount,"Transfer to "+accountIdDestination);
         credit(accountIdDestination,amount,"Transfer from "+accountIdSource);
     }
@@ -172,7 +175,7 @@ public class BankAccountServiceImpl implements BankAccountService{
     public AccountHistoryDto getAccountHistory(String accountId, int page, int size) throws BankAccountNotFoundException {
         BankAccount bankAccount=bankAccountRepository.findById(accountId).orElse(null);
         if(bankAccount==null) throw new BankAccountNotFoundException("Account not found");
-        Page<AccountOperation> accountOperations = accountOperationRepository.findByBankAccount_Id(accountId, PageRequest.of(page,size));
+        Page<AccountOperation> accountOperations = accountOperationRepository.findByBankAccount_IdOrderByOperationDateDesc(accountId, PageRequest.of(page,size));
         AccountHistoryDto accountHistoryDto=new AccountHistoryDto();
         List<AccountOperationDto> accountOperationDtos = accountOperations.getContent().stream().map(op->dtoMapper.fromAccountOperation(op)).collect(Collectors.toList());
         accountHistoryDto.setAccountOperationDtos(accountOperationDtos);
