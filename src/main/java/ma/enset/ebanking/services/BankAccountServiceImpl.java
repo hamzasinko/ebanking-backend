@@ -184,4 +184,11 @@ public class BankAccountServiceImpl implements BankAccountService{
         return accountHistoryDto;
     }
 
+    @Override
+    public List<CustomerDto> searchCustomers(String keyword) {
+        List<Customer> customers = customerRepository.searchCustomer(keyword);
+        List<CustomerDto> customerDtos = customers.stream().map(customer -> dtoMapper.fromCustomer(customer)).collect(Collectors.toList());
+        return customerDtos;
+    }
+
 }
