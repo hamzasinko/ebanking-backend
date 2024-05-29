@@ -3,6 +3,7 @@ package ma.enset.ebanking.web;
 import ma.enset.ebanking.dtos.*;
 import ma.enset.ebanking.exceptions.BalanceNotSufficientException;
 import ma.enset.ebanking.exceptions.BankAccountNotFoundException;
+import ma.enset.ebanking.exceptions.CustomerNotFoundException;
 import ma.enset.ebanking.exceptions.UnableToTransferException;
 import ma.enset.ebanking.services.BankAccountService;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,10 @@ public class BankAccountRestAPI {
     @GetMapping("/account/{accountId}")
     public BankAccountDto getBankAccount(@PathVariable String accountId) throws BankAccountNotFoundException {
         return bankAccountService.getBankAccount(accountId);
+    }
+    @GetMapping("/account/customer/{customerId}")
+    public List<BankAccountDto> getCustomerBankAccounts(@PathVariable Long customerId) throws CustomerNotFoundException {
+        return bankAccountService.getCustomerBankAccounts(customerId);
     }
     @GetMapping("/account")
     public List<BankAccountDto> listAccounts(){

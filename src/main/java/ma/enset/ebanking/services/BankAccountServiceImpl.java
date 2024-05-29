@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.awt.print.Pageable;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -192,6 +193,23 @@ public class BankAccountServiceImpl implements BankAccountService{
         List<Customer> customers = customerRepository.searchCustomer(keyword);
         List<CustomerDto> customerDtos = customers.stream().map(customer -> dtoMapper.fromCustomer(customer)).collect(Collectors.toList());
         return customerDtos;
+    }
+
+    @Override
+    public List<BankAccountDto> getCustomerBankAccounts(Long customerId) throws CustomerNotFoundException {
+        Customer customer= customerRepository.findById(customerId)
+                .orElseThrow(()->new CustomerNotFoundException("Customer Not found"));
+        List<BankAccount> bankAccounts = bankAccountRepository.findByCustomer_Id(customerId);
+            List<BankAccountDto> bankAccountDtos = bankAccounts.stream().map(bankAccount -> {
+                if(bankAccount instanceof CurrentAccount) {
+                    CurrentAccount currentAccount=(CurrentAccount) bankAccount;
+                    return dtoMapper.fromCurrentAccount(currentAccount);
+                }else{
+                    SavingAccount savingAccount=(SavingAccount) bankAccount;
+                    return  dtoMapper.fromSavingAccount(savingAccount);
+                }
+            }).collect(Collectors.toList());
+        return bankAccountDtos;
     }
 
 }
