@@ -13,4 +13,7 @@ public class SavingBankAccountDto extends BankAccountDto {
     private AccountStatus status;
     private CustomerDto customerDto;
     private double interestRate;
+    public SavingBankAccountDto() {
+        this.setType("SavingAccount");
+    }
 }

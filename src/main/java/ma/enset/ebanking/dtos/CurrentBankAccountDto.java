@@ -14,4 +14,7 @@ public class CurrentBankAccountDto extends BankAccountDto {
     private AccountStatus status;
     private CustomerDto customerDto;
     private double overDraft;
+    public CurrentBankAccountDto() {
+        this.setType("CurrentAccount");
+    }
 }

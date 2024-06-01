@@ -37,4 +37,6 @@ public interface BankAccountService {
     List<CustomerDto> searchCustomers(String keyword);
 
     List<BankAccountDto> getCustomerBankAccounts(Long customerId) throws CustomerNotFoundException;
+
+    BankAccountDto saveBankAccount(String accountType, double balance, Double overDraft, Double interestRate, Long customerId) throws CustomerNotFoundException;
 }

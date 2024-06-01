@@ -212,4 +212,18 @@ public class BankAccountServiceImpl implements BankAccountService{
         return bankAccountDtos;
     }
 
+    @Override
+    public BankAccountDto saveBankAccount(String accountType,
+                                          double balance,
+                                          Double overDraft,
+                                          Double interestRate,
+                                          Long customerId) throws CustomerNotFoundException {
+        if (accountType.equals("CurrentAccount")) {
+            return saveCurrrentBankAccount(balance, overDraft, customerId);
+        } else if (accountType.equals("SavingAccount")) {
+            return saveSavingBankAccount(balance, interestRate, customerId);
+        }
+        return null;
+    }
+
 }
